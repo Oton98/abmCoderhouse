@@ -2,8 +2,10 @@ package com.example.demo.controllers;
 
 import com.example.demo.model.Cliente;
 import com.example.demo.model.Producto;
+import com.example.demo.model.Venta;
 import com.example.demo.repository.RepositoryCliente;
 import com.example.demo.repository.RepositoryProducto;
+import com.example.demo.repository.RepositoryVenta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,17 @@ public class Controller {
     @Autowired
     private RepositoryProducto productoRepository;
 
+    @Autowired
+    private RepositoryVenta ventaRepository;
+
+    //Post de Venta, Cliente y Produdcto
+
+    @PostMapping("altaVenta")
+    public  String post(@RequestBody Venta venta){
+        ventaRepository.save(venta);
+        return "Guardado";
+    }
+
     @PostMapping("altaCliente")
     public String post(@RequestBody Cliente cliente){
         clienteRepository.save(cliente);
@@ -30,6 +43,12 @@ public class Controller {
         return "Guardado";
     }
 
+    //Post de Venta, Cliente y Producto
+    @GetMapping("ventas")
+    public List<Venta> getVentas(){
+        return ventaRepository.findAll();
+    }
+
     @GetMapping("clientes")
     public List<Cliente> getClientes(){
         return clienteRepository.findAll();
@@ -39,6 +58,8 @@ public class Controller {
     public List<Producto> getProductos(){
         return productoRepository.findAll();
     }
+
+    //Puts de Cliente y de Producto (no creo que haya de venta)
 
     @PutMapping("modificarCliente/{id}")
     public String update(@PathVariable Long id, @RequestBody Cliente cliente) {
@@ -72,6 +93,14 @@ public class Controller {
         }
     }
 
+    //Delete de Venta, Productos y Cliente
+    @DeleteMapping("borrarVenta/{id}")
+    public String deleteVenta(@PathVariable Long id){
+        Venta deleteVenta = ventaRepository.findById(id).get();
+        ventaRepository.delete(deleteVenta);
+        return "Eliminado";
+    }
+
     @DeleteMapping("borrarCliente/{id}")
     public String deleteCliente(@PathVariable Long id){
         Cliente deleteCliente = clienteRepository.findById(id).get();
@@ -85,10 +114,4 @@ public class Controller {
         productoRepository.delete(deleteProducto);
         return "Eliminado";
     }
-
-
-
-
-
-
 }
